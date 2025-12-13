@@ -1,6 +1,6 @@
 from contextlib import suppress
 
-from utils import iterate_input_lines, Stream
+from advent_of_code_2025.utils import iterate_input_lines, Stream
 
 digits = Stream.digits().reverse().collect()
 
