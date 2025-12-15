@@ -1,5 +1,6 @@
 import string
 from collections.abc import Iterable, Callable
+from typing import Any
 
 import numpy as np
 from scipy import signal
@@ -43,10 +44,10 @@ class Stream[T](Iterable[T]):
     def from_input_lines(cls):
         with open("input") as f:
             lines = f.readlines()
-        return Stream(lines)
+        return Stream([line[:-1] for line in lines])
 
     def __init__(self, iterable: Iterable[T]):
-        self._value = tuple(iterable)
+        self._value = list(iterable)
 
     def __iter__(self):
         return iter(self._value)
@@ -63,6 +64,34 @@ class Stream[T](Iterable[T]):
 
     def collect(self):
         return list(self._value)
+
+    def split(self, delimiter: T, limit=-1):
+        streams = []
+        current = self._value
+        while len(current) > 0:
+            if 0 <= limit <= len(streams):
+                streams.append(Stream(current))
+                break
+            else:
+                try:
+                    index = current.index(delimiter)
+                except ValueError:
+                    streams.append(Stream(current))
+                    break
+                else:
+                    streams.append(Stream(current[:index]))
+                    current = current[index+1:]
+        return streams
+
+    def filter(self, function: Callable[[T], bool]):
+        return Stream(item for item in self._value if function(item))
+
+    def count(self):
+        return Item(len(self._value))
+
+    def foreach(self, function: Callable[[T], Any]):
+        for item in self._value:
+            function(item)
 
 
 def iterate_input_lines():
