@@ -10,3 +10,4 @@ My solutions for the [Advent of Code](https://adventofcode.com/) programming cha
 - Day 4: ⭐⭐
 - Day 5: ⭐⭐
 - Day 6: ⭐⭐
+- Day 7: ⭐⭐

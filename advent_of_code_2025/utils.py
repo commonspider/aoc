@@ -12,6 +12,9 @@ class Item[T]:
         self._value = value
         self._trace = trace
 
+    def count(self, value):
+        return Item(self._value.count(value))
+
     def print(self):
         value = self._value
         trace = self._trace
@@ -35,6 +38,9 @@ class Item[T]:
         else:
             raise TypeError
 
+    def sum(self):
+        return Item(sum(self._value))
+
 
 class Stream[T](Iterable[T]):
     @classmethod
@@ -45,7 +51,7 @@ class Stream[T](Iterable[T]):
     def from_input_lines(cls):
         with open("input") as f:
             lines = f.readlines()
-        return Stream([line[:-1] for line in lines])
+        return Stream(lines)
 
     def __init__(self, iterable: Iterable[T]):
         self._value = list(iterable)
@@ -100,13 +106,19 @@ class Stream[T](Iterable[T]):
     def to_matrix(self):
         return Matrix(self._value)
 
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return Item(self._value[item])
+        else:
+            raise TypeError
+
 
 def get_input_lines():
     with open("input") as f:
-        return f.readlines()
+        return [line[:-1] for line in f.readlines()]
 
 
-def iterate_input_lines():
+def stream_input_lines():
     return Stream(get_input_lines())
 
 
@@ -115,7 +127,7 @@ class Matrix:
     def from_input(cls, fill: str = " "):
         with open("input") as f:
             lines = f.readlines()
-        lines = list(map(lambda l: list(l[:-1]), lines))
+        lines = list(map(list, lines))
         length = max(*map(len, lines))
         for line in lines:
             line.extend([fill] * (length - len(line)))

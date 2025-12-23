@@ -1,6 +1,6 @@
 from contextlib import suppress
 
-from advent_of_code_2025.utils import iterate_input_lines, Stream
+from advent_of_code_2025.utils import stream_input_lines, Stream
 
 digits = Stream.digits().reverse().to_list()
 
@@ -15,4 +15,4 @@ def get_largest_joltage(line: str, n: int = 12) -> str:
         raise ValueError
     return value + get_largest_joltage(line[index + 1:], n - 1)
 
-iterate_input_lines().map(get_largest_joltage).map(int).sum().print()
+stream_input_lines().map(get_largest_joltage).map(int).sum().print()
