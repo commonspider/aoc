@@ -1,24 +1,24 @@
 import math
 
-from advent_of_code_2025.utils import Stream, Matrix
+import numpy as np
+
+from advent_of_code_2025.utils import Stream, get_input_lines
 
 
-def solve(i, problem: Matrix):
-    lines = problem.to_list()
-    sign = lines[0].pop()
-    if sign not in ("+", "*"):
-        raise ValueError
-    numbers = Stream(lines).map(lambda l: "".join(l).strip()).map(lambda l: int(l) if len(l) > 0 else 0).to_list()
-    if sign == "+":
-        return sum(numbers)
-    elif sign == "*":
-        return math.prod(numbers)
+lines = get_input_lines()
+beam = [0] * len(lines[0])
+beam[lines[0].index("S")] = 1
 
-(
-    Matrix.from_input()
-        .split_vertical()
-        .map(lambda x: x.transpose())
-        .enumerated_map(solve)
-        .sum()
-        .print()
-)
+def solve(line: str):
+    global beam
+    new_beam = [0] * len(line)
+    for i, (l, b) in enumerate(zip(line, beam)):
+        if l == "." and b > 0:
+            new_beam[i] += b
+        elif l == "^" and b > 0:
+            new_beam[i - 1] += b
+            new_beam[i + 1] += b
+    beam = new_beam
+    return beam
+
+Stream(lines[1:]).map(solve)[-1].sum().print()
